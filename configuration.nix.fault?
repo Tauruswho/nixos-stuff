@@ -2,7 +2,15 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
- { config, pkgs, ... }:
+ { config, pkgs, lib, ... }:
+ let
+  nix-software-center = import (pkgs.fetchFromGitHub {
+    owner = "vlinkz";
+    repo = "nix-software-center";
+    rev = "0.1.2";
+    sha256 = "xiqF1mP8wFubdsAQ1BmfjzCgOD3YZf7EGWl9i69FTls=";
+  }) {};
+in
 
 {
   imports =
@@ -210,7 +218,13 @@ users.users.monica = {
       bluez-alsa
       bluez-tools
       openhantek6022
-    ];
+      nix-software-center
+      librewolf-unwrapped
+      brave
+      obs-studio
+      bluefish
+      cifs-utils 
+     ];
 
  # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -255,57 +269,7 @@ boot.kernel.sysctl = { "vm.swappiness" = 10;};
  services.nfs.server.enable = true;
  services.nfs.server.exports = ''  /home 192.168.1.0/18(rw,async,insecure,no_root_squash,no_subtree_check)  '';
 
- # NFS Client
- fileSystems."/nfs-mnt" = {
-    device = "192.168.1.72:/home";
-    fsType = "nfs";
-    options = [ "x-systemd.automount" "noauto" ];
-  };
+networking.firewall.allowedTCPPorts = [ 2049 5357 445 139 80 443 ];
+networking.firewall.allowedUDPPorts = [ 3702 137 138 ];
 
-
- # Samba Server
-services.samba-wsdd.enable = true; # make shares visible for windows 10 clients
-
-networking.firewall.allowedTCPPorts = [ 2049 5357 ];
-
-networking.firewall.allowedUDPPorts = [ 3702 ];
-services.samba = {
-  enable = true;
-  securityType = "user";
-  extraConfig = ''
-    workgroup = WORKGROUP
-    server string = smbnix
-    netbios name = smbnix
-    security = user 
-    #use sendfile = yes
-    #max protocol = smb2
-    # note: localhost is the ipv6 localhost ::1
-    hosts allow = 192.168.1. 127.0.0.1 localhost
-    hosts deny = 0.0.0.0/0
-    guest account = nobody
-    map to guest = bad user
-  '';
-  shares = {
-    public = {
-      path = "/home";
-      browseable = "yes";
-      "read only" = "no";
-      "guest ok" = "yes";
-      "create mask" = "0644";
-      "directory mask" = "0755";
-      "force user" = "username";
-      "force group" = "groupname";
-    };
-    private = {
-      path = "/home/mark/Documents";
-      browseable = "yes";
-      "read only" = "no";
-      "guest ok" = "no";
-      "create mask" = "0644";
-      "directory mask" = "0755";
-      "force user" = "username";
-      "force group" = "groupname";
-    };
-  };
-};
 }
