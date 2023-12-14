@@ -30,6 +30,12 @@
 
   # Enable networking
   networking.networkmanager.enable = true;
+  networking.defaultGateway = "192.168.1.1";
+  networking.nameservers = [ "1.1.1.1" "1.0.0.1" ];
+  networking.interfaces.eth0.ipv4.addresses = [ {
+  address = "192.168.1.27";
+  prefixLength = 24;
+} ];
 
   # Set your time zone.
   time.timeZone = "Europe/Madrid";
@@ -231,10 +237,10 @@ users.users.monica = {
   services.flatpak.enable = true;
 
   # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
+  # networking.firewall.allowedTCPPorts = [ 2049 5357 ];
+  # networking.firewall.allowedUDPPorts = [ 3702 ];
   # Or disable the firewall altogether.
-  # networking.firewall.enable = false;
+  networking.firewall.enable = false;
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
@@ -244,12 +250,12 @@ users.users.monica = {
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "23.05"; # Did you read the comment?
 # Automatic Garbage Collection
-nix.gc = {
+  nix.gc = {
                 automatic = true;
                 dates = "weekly";
                 options = "--delete-older-than 7d";
         };
-boot.kernel.sysctl = { "vm.swappiness" = 10;};
+  boot.kernel.sysctl = { "vm.swappiness" = 10;};
 
  # NFS Server
  services.nfs.server.enable = true;
@@ -262,13 +268,8 @@ boot.kernel.sysctl = { "vm.swappiness" = 10;};
     options = [ "x-systemd.automount" "noauto" ];
   };
 
-
  # Samba Server
 services.samba-wsdd.enable = true; # make shares visible for windows 10 clients
-
-networking.firewall.allowedTCPPorts = [ 2049 5357 ];
-
-networking.firewall.allowedUDPPorts = [ 3702 ];
 services.samba = {
   enable = true;
   securityType = "user";
