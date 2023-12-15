@@ -61,7 +61,7 @@
   # Enable the KDE Plasma Desktop Environment.
   services.xserver.displayManager.sddm.enable = true;
   services.xserver.desktopManager.plasma5.enable = true;
-
+  # services.xserver.desktopManager.cinnamon.enable = true;
   # Configure keymap in X11
   services.xserver = {
     layout = "gb";
@@ -216,6 +216,7 @@ users.users.monica = {
       bluez-alsa
       bluez-tools
       openhantek6022
+      mpv
     ];
 
  # Some programs need SUID wrappers, can be configured further or are
