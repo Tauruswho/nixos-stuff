@@ -72,7 +72,13 @@
   console.keyMap = "uk";
 
   # Enable CUPS to print documents and enable scanners.
-  services.printing.enable = true;
+  # services.printing.enable = true;
+  services.printing = {
+    # run on first setup: sudo hp-setup -i -a
+    enable  =  true;
+    drivers = [ pkgs.hplipWithPlugin ];
+};
+
   hardware.sane.enable = true; # enables support for SANE scanners
   services.ipp-usb.enable=true;
   hardware.sane.extraBackends = [ pkgs.hplipWithPlugin ];
@@ -81,6 +87,8 @@
   services.avahi.enable = true;
   services.avahi.nssmdns = true;
   services.fwupd.enable = true;
+
+  # Bluetooth
   hardware.bluetooth.enable = true; # enables support for Bluetooth
   hardware.bluetooth.powerOnBoot = true; # powers up the default Bluetooth controller on boot
   services.blueman.enable = true;
@@ -189,6 +197,8 @@ users.users.monica = {
       sane-frontends
       xsane
       hplipWithPlugin
+      gutenprint
+      gutenprintBin
       gimp-with-plugins
       usbutils
       webcamoid
@@ -217,6 +227,7 @@ users.users.monica = {
       bluez-tools
       openhantek6022
       mpv
+      hplip
     ];
 
  # Some programs need SUID wrappers, can be configured further or are
@@ -230,7 +241,7 @@ users.users.monica = {
   # List services that you want to enable:
   # Auto system update
   system.autoUpgrade.enable = true;
-  system.autoUpgrade.allowReboot = false;
+  system.autoUpgrade.allowReboot = true;
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
   services.gvfs.enable = true;
