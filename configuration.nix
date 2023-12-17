@@ -275,7 +275,7 @@ users.users.monica = {
 
  # NFS Client
  fileSystems."/nfs-mnt" = {
-    device = "192.168.1.72:/home";
+    device = "192.168.1.28:/home";
     fsType = "nfs";
     options = [ "x-systemd.automount" "noauto" ];
   };
