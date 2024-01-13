@@ -13,12 +13,12 @@
   # Bootloader.
    boot.loader.systemd-boot.enable = true;
    boot.loader.efi.canTouchEfiVariables = true;
-   boot.supportedFilesystems = [ "bcachefs" ];
-   boot.kernelPackages = pkgs.linuxPackages_latest;
-  # boot.kernelPackages = config.boot.zfs.package.latestCompatibleLinuxPackages;
-  # boot.supportedFilesystems = [ "zfs" ];
-  # boot.zfs.forceImportRoot = false;
-  # boot.zfs.extraPools = [ "Backup-zfs-2" ];
+  # boot.supportedFilesystems = [ "bcachefs" ];
+  #  boot.kernelPackages = pkgs.linuxPackages_latest;
+   boot.kernelPackages = config.boot.zfs.package.latestCompatibleLinuxPackages;
+   boot.supportedFilesystems = [ "zfs" ];
+   boot.zfs.forceImportRoot = false;
+   boot.zfs.extraPools = [ "Backup-zfs-2" ];
    networking.hostId = "3cc408bd";
 
   networking.hostName = "nix-who"; # Define your hostname.

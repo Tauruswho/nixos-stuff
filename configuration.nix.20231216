@@ -13,12 +13,12 @@
   # Bootloader.
    boot.loader.systemd-boot.enable = true;
    boot.loader.efi.canTouchEfiVariables = true;
-   boot.supportedFilesystems = [ "bcachefs" ];
-   boot.kernelPackages = pkgs.linuxPackages_latest;
-  # boot.kernelPackages = config.boot.zfs.package.latestCompatibleLinuxPackages;
-  # boot.supportedFilesystems = [ "zfs" ];
-  # boot.zfs.forceImportRoot = false;
-  # boot.zfs.extraPools = [ "Backup-zfs-2" ];
+  # boot.supportedFilesystems = [ "bcachefs" ];
+  #  boot.kernelPackages = pkgs.linuxPackages_latest;
+   boot.kernelPackages = config.boot.zfs.package.latestCompatibleLinuxPackages;
+   boot.supportedFilesystems = [ "zfs" ];
+   boot.zfs.forceImportRoot = false;
+   boot.zfs.extraPools = [ "Backup-zfs-2" ];
    networking.hostId = "3cc408bd";
 
   networking.hostName = "nix-who"; # Define your hostname.
@@ -62,7 +62,6 @@
   services.xserver.displayManager.sddm.enable = true;
   services.xserver.desktopManager.plasma5.enable = true;
   # services.xserver.desktopManager.cinnamon.enable = true;
-  # services.cinnamon.apps.enable
   # Configure keymap in X11
   services.xserver = {
     layout = "gb";
@@ -275,11 +274,11 @@ users.users.monica = {
  services.nfs.server.exports = ''  /home 192.168.1.0/18(rw,async,insecure,no_root_squash,no_subtree_check)  '';
 
  # NFS Client
- # fileSystems."/nfs-mnt" = {
- #    device = "192.168.1.28:/home";
- #    fsType = "nfs";
- #    options = [ "x-systemd.automount" "noauto" ];
- #  };
+ fileSystems."/nfs-mnt" = {
+    device = "192.168.1.72:/home";
+    fsType = "nfs";
+    options = [ "x-systemd.automount" "noauto" ];
+  };
 
  # Samba Server
 services.samba-wsdd.enable = true; # make shares visible for windows 10 clients
