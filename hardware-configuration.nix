@@ -8,29 +8,34 @@
     [ (modulesPath + "/installer/scan/not-detected.nix")
     ];
 
-  boot.initrd.availableKernelModules = [ "xhci_pci" "ehci_pci" "ahci" "nvme" "usbhid" "sd_mod" ];
-  boot.initrd.kernelModules = [ ];
+  boot.initrd.availableKernelModules = [ "ahci" "xhci_pci" "usb_storage" "usbhid" "sd_mod" "sdhci_pci" "rtsx_pci_sdmmc" ];
+  boot.initrd.kernelModules = ["zfs" ];
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
 
   fileSystems."/" =
-    { device = "/dev/disk/by-uuid/8ca9bdae-1753-498e-aaa0-4e0aa07f8e0b";
-      fsType = "xfs";
+    { device = "nix-zpool/root";
+      fsType = "zfs";
+    };
+
+  fileSystems."/nix" =
+    { device = "nix-zpool/nix";
+      fsType = "zfs";
+    };
+
+  fileSystems."/var" =
+    { device = "nix-zpool/var";
+      fsType = "zfs";
+    };
+
+  fileSystems."/home" =
+    { device = "nix-zpool/home";
+      fsType = "zfs";
     };
 
   fileSystems."/boot" =
-    { device = "/dev/disk/by-uuid/0B18-5E54";
+    { device = "/dev/disk/by-uuid/DBE5-9414";
       fsType = "vfat";
-    };
-
-  fileSystems."/testpool/home" =
-    { device = "testpool/nixos/home";
-      fsType = "zfs";
-    };
-
-  fileSystems."/testpool/root" =
-    { device = "testpool/nixos/root";
-      fsType = "zfs";
     };
 
   swapDevices = [ ];
@@ -40,8 +45,8 @@
   # still possible to use this option, but it's recommended to use it in conjunction
   # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
   networking.useDHCP = lib.mkDefault true;
-  # networking.interfaces.eth0.useDHCP = lib.mkDefault true;
-  # networking.interfaces.wlp7s0.useDHCP = lib.mkDefault true;
+  # networking.interfaces.enp3s0.useDHCP = lib.mkDefault true;
+  # networking.interfaces.wlp2s0.useDHCP = lib.mkDefault true;
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
