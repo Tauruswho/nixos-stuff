@@ -21,7 +21,7 @@
   # boot.zfs.extraPools = [ "Backup-zfs-2" ];
    networking.hostId = "3cc408bd";
 
-  networking.hostName = "nix-nuc6"; # Define your hostname.
+  networking.hostName = "nix-asus"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
@@ -33,7 +33,7 @@
   networking.defaultGateway = "192.168.1.1";
   networking.nameservers = [ "1.1.1.1" "1.0.0.1" ];
   networking.interfaces.eth0.ipv4.addresses = [ {
-  address = "192.168.1.30";
+  address = "192.168.1.27";
   prefixLength = 24;
 } ];
 
@@ -229,6 +229,7 @@ users.users.monica = {
       openhantek6022
       mpv
       hplip
+      eagle
     ];
 
  # Some programs need SUID wrappers, can be configured further or are
@@ -241,8 +242,8 @@ users.users.monica = {
   
   # List services that you want to enable:
   # Auto system update
-  system.autoUpgrade.enable = true;
-  system.autoUpgrade.allowReboot = true;
+  system.autoUpgrade.enable = false;
+  system.autoUpgrade.allowReboot = false;
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
   services.gvfs.enable = true;
@@ -261,7 +262,7 @@ users.users.monica = {
   # this value at the release version of the first install of this system.
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "23.05"; # Did you read the comment?
+  system.stateVersion = "23.11"; # Did you read the comment?
 # Automatic Garbage Collection
   nix.gc = {
                 automatic = true;
