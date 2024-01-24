@@ -18,7 +18,7 @@
    boot.kernelPackages = config.boot.zfs.package.latestCompatibleLinuxPackages;
    boot.supportedFilesystems = [ "zfs" ];
   # boot.zfs.forceImportRoot = false;
-  # boot.zfs.extraPools = [ "Backup-zfs-2" ];
+   boot.zfs.extraPools = [ "Backup-zfs-2" ];
    networking.hostId = "3cc408bd";
 
   networking.hostName = "nix-asus"; # Define your hostname.
@@ -270,6 +270,16 @@ users.users.monica = {
                 options = "--delete-older-than 7d";
         };
   boot.kernel.sysctl = { "vm.swappiness" = 10;};
+
+  # zfs autosnapshots -- zfs set com.sun:auto-snapshot=true nix-zroot/home
+  services.zfs.autoSnapshot = {
+  enable = true;
+  frequent = 0;
+  hourly = 8;
+  daily = 7;
+  weekly = 4;
+  monthly = 1;
+};
 
  # NFS Server
  services.nfs.server.enable = true;
