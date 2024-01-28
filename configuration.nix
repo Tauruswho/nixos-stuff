@@ -61,6 +61,7 @@
   # Enable the KDE Plasma Desktop Environment.
   services.xserver.displayManager.sddm.enable = true;
   services.xserver.desktopManager.plasma5.enable = true;
+  services.xserver.desktopManager.enlightenment.enable = true;
   # services.xserver.desktopManager.cinnamon.enable = true;
   # services.cinnamon.apps.enable
   # Configure keymap in X11
@@ -230,6 +231,10 @@ users.users.monica = {
       mpv
       hplip
       eagle
+      libsForQt5.kdeconnect-kde
+      ghostscript
+      onlyoffice-bin_7_5
+      enlightenment.terminology
     ];
 
  # Some programs need SUID wrappers, can be configured further or are
