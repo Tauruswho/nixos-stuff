@@ -10,6 +10,12 @@
       ./hardware-configuration.nix
     ];
 
+     # Enable Flakes and the new command-line tool
+   nix.settings.experimental-features = [ "nix-command" "flakes" ];
+
+    # Set default editor to vim
+   environment.variables.EDITOR = "vim";
+
   # Bootloader.
    boot.loader.systemd-boot.enable = true;
    boot.loader.efi.canTouchEfiVariables = true;
@@ -18,10 +24,10 @@
    boot.kernelPackages = config.boot.zfs.package.latestCompatibleLinuxPackages;
    boot.supportedFilesystems = [ "zfs" ];
   # boot.zfs.forceImportRoot = false;
-   boot.zfs.extraPools = [ "Backup-zfs-2" ];
+   boot.zfs.extraPools = [ "Backup-zfs-2" "home-spare" ];
    networking.hostId = "3cc408bd";
 
-  networking.hostName = "nix-asus"; # Define your hostname.
+  networking.hostName = "who"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
@@ -30,12 +36,27 @@
 
   # Enable networking
   networking.networkmanager.enable = true;
-  networking.defaultGateway = "192.168.1.1";
-  networking.nameservers = [ "1.1.1.1" "1.0.0.1" ];
-  networking.interfaces.eth0.ipv4.addresses = [ {
-  address = "192.168.1.27";
-  prefixLength = 24;
-} ];
+  networking.extraHosts =
+  ''
+    192.168.1.21 who
+    192.168.1.22 who
+    192.168.1.23 rocky
+    192.168.1.24 rocky
+    192.168.1.25 nuc7
+    192.168.1.26 nuc7
+    192.168.1.27 hp
+    192.168.1.28 hp
+    192.168.1.29 nuc6
+    192.168.1.30 nuc6
+    192.168.1.31 raspi
+    192.168.1.32 raspi
+  '';
+  # networking.defaultGateway = "192.168.1.1";
+  # networking.nameservers = [ "1.1.1.1" "1.0.0.1" ];
+  # networking.interfaces.eth0.ipv4.addresses = [ {
+  # address = "192.168.1.27";
+  # prefixLength = 24;
+ # } ];
 
   # Set your time zone.
   time.timeZone = "Europe/Madrid";
@@ -118,32 +139,41 @@
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
     users.users.mince = {
+    homeMode = "770";
     isNormalUser = true;
+    uid = 1956;
+    home  = "/home/mince";
     description = "Mince";
-    extraGroups = [ "networkmanager" "wheel" "mark" "mince" "monica" "scanner" "lp" ];
+    group ="mince";
+    extraGroups = [ "networkmanager" "wheel" "mark" "mince" "monica" "scanner" "lp" "users" ];
     packages = with pkgs; [
     # firefox
     ];
   };
-users.users.mark = {
+  users.users.mark = {
+  homeMode = "770";
   isNormalUser  = true;
   uid = 1955;
   home  = "/home/mark";
   description  = "Mark";
-  extraGroups  = [ "wheel" "networkmanager" "mark" "monica" "scanner" "lp" ];
+  group = "mark";
+  extraGroups  = [ "wheel" "networkmanager" "mark" "mince" "monica" "scanner" "lp" "users" ];
   
 };
 
-users.users.monica = {
+  users.users.monica = {
+  homeMode = "770";
   isNormalUser  = true;
   uid = 1957;
   home  = "/home/monica";
   description  = "Monica";
-  extraGroups  = [ "wheel" "networkmanager" "monica" "mark" "scanner" "lp" ];
+  group = "monica";
+  extraGroups  = [ "wheel" "networkmanager" "monica" "mark" "mince" "scanner" "lp" "users" ];
   
 };
 
   users.groups.mark.gid = 1955;
+  users.groups.mince.gid = 1956;
   users.groups.monica.gid = 1957;
 
   security.sudo.extraConfig = " Defaults	timestamp_timeout=60 ";
@@ -166,11 +196,21 @@ users.users.monica = {
   redhat-official-fonts
   ];
 
+  programs.git = {
+  enable = true;
+  package = pkgs.gitFull;
+  config.credential.helper = "libsecret";
+};
+
+
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
   #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
       wget
+      gitFull
+      vim
+      curl
       firefox
       kate
       conky
@@ -235,6 +275,12 @@ users.users.monica = {
       ghostscript
       onlyoffice-bin_7_5
       enlightenment.terminology
+      krusader
+      xfce.thunar
+      xfce.thunar-volman
+      xfce.thunar-archive-plugin
+      xfce.thunar-media-tags-plugin
+      kicad
     ];
 
  # Some programs need SUID wrappers, can be configured further or are
@@ -272,7 +318,7 @@ users.users.monica = {
   nix.gc = {
                 automatic = true;
                 dates = "weekly";
-                options = "--delete-older-than 7d";
+                options = "--delete-older-than 14d";
         };
   boot.kernel.sysctl = { "vm.swappiness" = 10;};
 
@@ -284,6 +330,11 @@ users.users.monica = {
   daily = 7;
   weekly = 4;
   monthly = 1;
+};
+
+  services.zfs.autoScrub = {
+  enable = true;
+  interval = "*-*-1,15 02:30";
 };
 
  # NFS Server
